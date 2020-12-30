@@ -131,8 +131,8 @@ def add_bg_for_qr(qr_path):
         result = Image.new(bg.mode, (w * 2, h * 2))
         result.paste(bg, box=(0, 0))
         result.paste(qr, box=(int(w / 2), int(h / 2)))
-        result.save("new_qr_code.png")
-        return os.path.abspath("new_qr_code.png")
+        result.save("qr_code.png")
+        return os.path.abspath("qr_code.png")
     except ImportError:
         logger.info("加载PIL失败，不对登录二维码进行优化，请查看requirements.txt")
         return qr_path
