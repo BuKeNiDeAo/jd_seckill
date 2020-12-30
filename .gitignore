@@ -118,7 +118,7 @@ test/
 cookies/
 *.cookies
 qr_code.png
-
+new_qr_code.png
 # jupyter
 .ipynb_checkpoints
 /test/

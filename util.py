@@ -3,6 +3,8 @@ import random
 import requests
 import os
 import time
+from PIL import Image
+
 
 from config import global_config
 
@@ -114,3 +116,16 @@ def save_image(resp, image_file):
     with open(image_file, 'wb') as f:
         for chunk in resp.iter_content(chunk_size=1024):
             f.write(chunk)
+
+
+
+def add_bg_for_qr(qr_path):
+    qr = Image.open(qr_path)
+    w = qr.width
+    h = qr.width
+    bg = Image.new("RGB", (w*2, h*2), (255, 255, 255))
+    result = Image.new(bg.mode, (w*2, h*2))
+    result.paste(bg, box=(0, 0))
+    result.paste(qr, box=(int(w/2), int(h/2)))
+    result.save("new_qr_code.png")
+    return os.path.abspath("new_qr_code.png")
