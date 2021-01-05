@@ -26,9 +26,12 @@ RUN set -ex; \
       # install qrcode view tools.
       apt-get update \
         && apt-get install -y --no-install-recommends \
-                   git \
-                   qrencode \
-                   zbar-tools; \
+                   git qrencode zbar-tools \
+                   libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
+                   libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
+                   libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
+                   libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
+                   libnss3; \
       \
       # clone jd seckill code.
       git clone -b $GIT_BRANCH https://github.com/huanghyw/jd_seckill.git /app; \
@@ -42,6 +45,7 @@ RUN set -ex; \
         -e 's/^fp.*/fp=$JD_SECKILL_FP/g' \
         -e 's/^sku_id.*/sku_id=$JD_SECKILL_SKU_ID/g' \
         -e 's/^buy_time.*/buy_time=$JD_SECKILL_BUY_TIME/g' \
+        -e 's/^continue_time.*/continue_time=$JD_SECKILL_CONTINUE_TIME/g' \
         -e 's/^default_user_agent.*/default_user_agent=$JD_SECKILL_DEFAULT_USER_AGENT/g' \
         -e 's/^random_useragent.*/random_useragent=$JD_SECKILL_RANDOM_USERAGENT/g' \
         -e 's/^payment_pwd.*/payment_pwd=$JD_SECKILL_PAYMENT_PWD/g' \
@@ -57,6 +61,15 @@ RUN set -ex; \
        \
         \
       pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/; \
+      \
+      # init Chromium Browser
+      python -c "import os;\
+                DEFAULT_DOWNLOAD_HOST = 'https://npm.taobao.org/mirrors'; \
+                os.environ[\"PYPPETEER_DOWNLOAD_HOST\"] = DEFAULT_DOWNLOAD_HOST;\
+                import asyncio;\
+                from pyppeteer import launch;\
+                asyncio.get_event_loop()\
+                    .run_until_complete(launch(args=[\"--no-sandbox\", \"--disable-setuid-sandbox\"]))"; \
       \
       chmod +x /usr/local/bin/docker-python-entrypoint; \
       chmod +x /usr/local/bin/qrcode; \
